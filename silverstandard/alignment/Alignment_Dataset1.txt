@@ -1,0 +1,11 @@
+# make reference from ENSEMBL
+# you can find the annotation on: ftp://ftp.ensembl.org/pub/release-90/gff3/
+cellranger mkref --genome=Homo_sapiens.GRCh38.v90.cellranger3 \\
+--fasta=GRch38_v90/Homo_sapiens.GRCh38.dna.primary_assembly.fa \\
+ --genes=Homo_sapiens.GRCh38.90.gtf
+
+# set fastq_path to fastq files downloaded from GSE?????
+
+cellranger count --fastqs=fastq_path --id=sample_dataset1 \\
+--transcriptome= Homo_sapiens.GRCh38.v90.cellranger3
+--expect-cells=3000 --localmem=400 --localcores=10

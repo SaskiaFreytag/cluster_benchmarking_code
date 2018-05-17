@@ -1,0 +1,10 @@
+#Run demuxlet from demuxlet folder
+
+## index
+samtools index scpipe/STAR/Aligned.sortedByCoord.out.mapped.bam 
+
+## run demuxlet
+
+./demuxlet --sam N701.aligned.sorted.mapped.bam \\
+--tag-UMI YM --tag-group YC --doublet-prior 0.05 --vcf joint_calls.vcf \\
+--field GT --out demuxlet
