@@ -54,3 +54,5 @@ colData(sce)$Assigned_CellType<-cls_id
 assigned_cell_types<-colData(sce)
 save(assigned_cell_types, file="Assigned_Cell_Types_Dataset3.RData")
 
+csl_id1<-cbind(colnames(z_1000_11)[test], z_1000_11[cbind(1:length(test), test)])
+save(csl_id1, file="Assigned_Cell_Types_Info_Dataset3.RData")
