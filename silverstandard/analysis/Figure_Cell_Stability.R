@@ -23,7 +23,7 @@ set.seed(162622829)
 subsampled <- lapply(1:5, function(x) sample(colData(sce)$barcode, 3000))
 
 inter_subsampled <- Reduce(intersect, subsampled)
-barcodes_indices <- lapply(subsampled, function(x) pmatch(inter_subsampled, x))s
+barcodes_indices <- lapply(subsampled, function(x) pmatch(inter_subsampled, x))
 
 ## Figure out ARI for each combination of clustering solutions in the same method
 comp_cluster<-function(tmp){
@@ -53,7 +53,7 @@ res_comp <- as.data.frame(res_comp)
 
 
 res_comp <- melt(res_comp)
-colnames(res_comp) <- c("Method", "Adjusted Rand Index")
+colnames(res_comp) <- c("Method", "ARI_comp")
 
 gg_color_hue <- function(n) {
   hues = seq(15, 375, length = n + 1)
@@ -62,7 +62,7 @@ gg_color_hue <- function(n) {
 
 colors_gg<- gg_color_hue(length(res))
 
-gg1 <- ggplot(res_comp, aes(x=`Method`, y=`Adjusted Rand Index`)) + geom_boxplot(aes(color=Method))+ theme_minimal() +  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+gg1 <- ggplot(res_comp, aes(x=`Method`, y=`ARI_comp`)) + geom_boxplot(aes(color=Method))+ theme_minimal() +  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
 gg1 <- ggdraw(gg1) +  draw_plot_label("a") 
 
 ggsave(gg1, file="Figure_Cell_Stability.pdf", width=8, height=5)

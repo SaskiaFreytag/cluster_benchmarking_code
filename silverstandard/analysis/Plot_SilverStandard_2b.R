@@ -53,8 +53,8 @@ plot_corr_sim <- function(mat1, clust_num){
     for(i in 1:length(clust_num)){
       text(i, (dim(mat1)[1]-i+1), labels=clust_num[i])
     }
-    mtext(side=2,line=2, text="Adjusted Rand Index", col="darkgrey", cex=1.2)
-    mtext(side=3,line=2, text="Normalized Mutual Information", col="darkgrey", cex=1.2)
+    mtext(side=2,line=2, text="ARI_comp", col="darkgrey", cex=1.2)
+    mtext(side=3,line=2, text="NMI", col="darkgrey", cex=1.2)
   })
 }
 

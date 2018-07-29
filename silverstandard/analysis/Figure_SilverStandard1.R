@@ -21,7 +21,6 @@ res_csl <- res
 load("Assigned_Cell_Types_Dataset1.RData")
 res_csl$Assigned_CellTypes <- assigned_cell_types$Assigned_CellType
 
-
 load("Clustering_Result_Dataset3.RData")
 res_pbmc4 <- res
 load("Assigned_Cell_Types_Dataset3.RData")
@@ -40,37 +39,33 @@ programs <- c( "ascend", "Cell Ranger", "CIDR", "countClust", "RaceID", "RaceID2
                ,"TSCAN")         
 index_all <- lapply(res_all, function(x) pmatch(programs, colnames(x)))
 
+## Figure out homogeneity with regards to truth
 
-##  Figure out the inaccuracy of each method
-inaccuracy <- function(tab) {
-  all_inacc <- apply(tab, 1, function(x) {
-    max_val <- which.max(x)
-    sum(x[-max_val])/sum(x)}
-  )
-  sum(all_inacc)/dim(tab)[1]
+homogeneity_score <- function(a, b) {
+    mi <- mutinformation(a, b)
+    entropy.a <- entropy(a)
+    entropy.b <- entropy(b)
+    if (entropy.a == 0.0) {
+        homogeneity <- 1.0
+    } else {
+        homogeneity <- mi / entropy.a
+    }
+    homogeneity
 }
 
-tab_all <- lapply(1:length(index_all), function(x) lapply(index_all[[x]], function(y) table(res_all[[x]][, c(y, which(colnames(res_all[[x]]) == "Assigned_CellTypes"))])))
-names(tab_all) <- names(res_all)
+homo_all <- sapply(1:length(index_all), function(x) apply(res_all[[x]][, index_all[[x]]], 2, function(y) homogeneity_score(res_all[[x]]$Assigned_CellTypes, y)))
+
+homo_all <- melt(homo_all)
+
+colnames(homo_all) <- c("Method", "Dataset", "Homogeneity")
+homo_all$Dataset <- paste("dataset", homo_all$Dataset)
 
 
-accuracy_all <- lapply(tab_all, function(y) cbind(programs, sapply(y, function(x) 1-inaccuracy(x))))
-
-for (i in 1:length(accuracy_all)){
-  accuracy_all[[i]] <- cbind(accuracy_all[[i]], names(accuracy_all)[i])
-}
-
-
-accuracy_all <- Reduce(rbind, accuracy_all)
-
-colnames(accuracy_all) <- c("Method", "Accuracy", "Dataset") 
-accuracy_all <- as.data.frame(accuracy_all)
-
-accuracy_all$Accuracy<-as.numeric(as.character(accuracy_all$Accuracy))
-
-## Plot accuracy
-g1 <- ggplot(accuracy_all, aes(x=Method, y=Accuracy)) + geom_col(aes(alpha=Dataset, fill=Method), position = "dodge") + 
-  theme_minimal() + guides(fill=FALSE) +  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+## Plot homogeneity
+g1 <- ggplot(homo_all, aes(x=Method, y=Homogeneity)) + geom_col(aes(fill=Method, group=Dataset), position = "dodge") +
+geom_col(aes(alpha=Dataset), position = "dodge", fill="black") +
+scale_alpha_manual(values=c(0.05, 0.2, 0.5)) +
+theme_minimal() + guides(fill=FALSE) +  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 g1 <- ggdraw(g1)+ draw_plot_label("b")
 
 ## Figure out ARI and number of clusters with respect to the truth
