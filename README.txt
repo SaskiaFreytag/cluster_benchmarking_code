@@ -48,13 +48,13 @@ org.Hs.eg.db~3.5.0, OrganismDbi~1.20.0, pbapply~1.3-4, pcaPP~1.9-73, permute~0.9
 pheatmap~1.0.8, picante~1.6-2, pillar~1.2.1, pillar~1.2.1, pkgconfig~2.0.1, pkgmaker~0.22, 
 plyr~1.8.4, png~0.1-7, prabclus~2.2-6, pracma~2.1.4, prettyunits~1.0.2, prodlim~1.6.1, 
 progress~1.1.2, proxy~0.4-22, psych~1.8.3.3, purrr~0.2.4, R.methodsS3~1.7.1, R.oo~1.21.0, 
-R.utils~2.6.0, R6~2.2.2, ranger~0.9.0, RANN~2.5.1, RBGL~1.54.0, RBGL~1.54.0, RCA~1.0, 
+R.utils~2.6.0, R6~2.2.2, RaceID ~ https://github.com/dgrun/RaceID, RaceID2 ~https://github.com/dgrun/StemID, ranger~0.9.0, RANN~2.5.1, RBGL~1.54.0, RBGL~1.54.0, RCA~1.0, 
 RColorBrewer~1.1-2, Rcpp~0.12.16, RcppAnnoy~0.0.10, RcppEigen~0.3.3.4.0, 
 RcppParallel~4.4.0, RcppRoll~0.2.2, RCurl~1.95-4.10, RCurl~1.95-4.10, recipes~0.1.2, 
 registry~0.5, reshape~0.8.7, reshape2~1.4.3, rhdf5~2.22.0, rhdf5~2.22.0, Rhtslib~1.10.0, 
 rjson~0.2.15, rlang~0.2.0, Rmisc~1.5, RMySQL~0.10.14, rngtools~1.2.4, robustbase~0.92-8, 
 robustbase~0.92-8, ROCR~1.0-7, rpart~4.1-13, rrcov~1.4-3, Rsamtools~1.30.0, 
-RSpectra~0.12-0, RSQLite~2.1.0, rstudioapi~0.7, rtracklayer~1.38.3, Rtsne~0.13, 
+RSpectra~0.12-0, RSQLite~2.1.0, Rsubread~1.28.1, rstudioapi~0.7, rtracklayer~1.38.3, Rtsne~0.13, 
 S4Vectors~0.16.0, SC3~1.7.7, scales~0.5.0, scales~0.5.0, scater~1.6.3, 
 scatterplot3d~0.3-41, scPipe~1.0.6, scran~1.6.9, SDMTools~1.1-221, segmented~0.5-3.0, 
 Seurat~2.3.0, sfsmisc~1.1-2, shiny~1.0.5, shinydashboard~0.7.0, SIMLR~1.4.1, 
@@ -69,3 +69,5 @@ zlibbioc~1.24.0, zoo~1.8-1
 Other software
 demuxlet version 0.0.1
 CellRanger version 2.0.0
+STAR version 020201
+Subread version 1.5.2)

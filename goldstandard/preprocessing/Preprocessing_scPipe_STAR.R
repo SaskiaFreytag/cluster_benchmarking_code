@@ -32,7 +32,7 @@ get_genes_by_go_alt <- function (go = NULL)
 library(scPipe)
 library(SingleCellExperiment)
 sce = create_sce_by_dir("scpipe/STAR")
-dim(scee)
+dim(sce)
 gene_number <- colSums(assay(sce, "counts") > 0)
 QC_metrics(sce)$number_of_genes = gene_number
 QC_metrics(sce)$total_count_per_cell = colSums(assay(sce, 
