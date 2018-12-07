@@ -4,7 +4,7 @@ cellranger mkref --genome=Homo_sapiens.GRCh38.v90.cellranger3 \\
 --fasta=GRch38_v90/Homo_sapiens.GRCh38.dna.primary_assembly.fa \\
  --genes=Homo_sapiens.GRCh38.90.gtf
 
-# set fastq_path to fastq files downloaded from GSE?????
+# set fastq_path to fastq files downloaded from GSE115189
 
 cellranger count --fastqs=fastq_path --id=sample_dataset1 \\
 --transcriptome= Homo_sapiens.GRCh38.v90.cellranger3

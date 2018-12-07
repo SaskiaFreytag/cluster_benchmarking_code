@@ -1,0 +1,6 @@
+#fastqs downloaded from
+#https://support.10xgenomics.com/single-cell-gene-expression/datasets/2.1.0/pbmc4k
+
+cellranger count --fastqs=fastq_path --id=Dataset3b_analysis \\
+--transcriptome= /opt/refdata-cellranger-GRCh38-1.2.0
+ --localmem=400 --localcores=10 --nosecondary

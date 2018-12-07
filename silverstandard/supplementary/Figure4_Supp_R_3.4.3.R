@@ -8,14 +8,12 @@
 
 
 library(cowplot)
-library(mclust)
-library(NMI)
-library(ggplot2)
-library(reshape2)
+
 
 # Load results from stability analysis
-load("Clustering_Robustness_Cells.RData")
+load("Clustering_Result_Stability.RData")
 
+load("Assigned_Cell_Types.RData")
 
 # Find intersection of all subsampled datasets
 load("Sce_Dataset3.RData")
@@ -25,14 +23,17 @@ subsampled <- lapply(1:5, function(x) sample(colData(sce)$barcode, 3000))
 inter_subsampled <- Reduce(intersect, subsampled)
 barcodes_indices <- lapply(subsampled, function(x) pmatch(inter_subsampled, x))
 
-## Figure out ARI for each combination of clustering solutions in the same method
+library(mclust)
+library(NMI)
+
+
 comp_cluster<-function(tmp){
   
   a<-length(tmp)-1
   b<-length(tmp)
   nc<-length(tmp[[1]])
   
-  comp<-sapply(1:a, function(x) sapply((x+1):b, function(y) adjustedRandIndex(tmp[[x]], tmp[[y]])))
+  comp<-sapply(1:a, function(x) sapply((x+1):b, function(y) mclust::adjustedRandIndex(tmp[[x]], tmp[[y]])))
   
   return(unlist(comp))
 }
@@ -51,6 +52,7 @@ for(i in 1:length(res)){
 res_comp <- res_comp[,order(colnames(res_comp), decreasing=F)]
 res_comp <- as.data.frame(res_comp)
 
+library(reshape2)
 
 res_comp <- melt(res_comp)
 colnames(res_comp) <- c("Method", "ARI_comp")
@@ -62,7 +64,42 @@ gg_color_hue <- function(n) {
 
 colors_gg<- gg_color_hue(length(res))
 
-gg1 <- ggplot(res_comp, aes(x=`Method`, y=`ARI_comp`)) + geom_boxplot(aes(color=Method))+ theme_minimal() +  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+library(ggplot2)
+gg1 <- ggplot(res_comp, aes(x=`Method`, y=`ARI_comp`)) + geom_boxplot(aes(color=Method)) + theme_minimal() +  
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + guides(color=FALSE)
 gg1 <- ggdraw(gg1) +  draw_plot_label("a") 
 
-ggsave(gg1, file="Figure_Cell_Stability.pdf", width=8, height=5)
+## compare to truth
+
+indices <- lapply(subsampled, function(x) match(x, sce$barcode))
+
+comp_truth<-function(tmp, index){
+  
+  b<-length(tmp)
+  
+  comp<-sapply(1:b, function(y)
+  {assigned_cell_types <- assigned_cell_types$Assigned_CellType[index[[y]]]
+    mclust::adjustedRandIndex(tmp[[y]],  assigned_cell_types)})
+  
+  return(unlist(comp))
+}
+
+  
+res_truth<-lapply(1:length(res), function(x) comp_truth(res[[x]], indices))
+res_truth<-Reduce(rbind, res_truth)
+res_truth <- t(res_truth)
+colnames(res_truth)<-names(res)  
+res_truth <- res_truth[, order(colnames(res_truth), decreasing=F)]
+
+res_truth <- melt(res_truth)
+colnames(res_truth) <- c("Number", "Method", "ARI_truth")
+
+
+gg2 <- ggplot(res_truth, aes(x=`Method`, y=`ARI_truth`)) + geom_boxplot(aes(color=Method)) + theme_minimal() +  
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+gg2 <- ggdraw(gg2) +  draw_plot_label("b") 
+
+gg <- grid.arrange(gg1, gg2, ncol=2, widths=4:5)
+
+ggsave("Figure_Cell_Stability_Supp.pdf", plot=gg, width=12, height=5)
+

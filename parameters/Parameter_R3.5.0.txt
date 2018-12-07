@@ -1,0 +1,122 @@
+- ascend
+	ncores=10
+	filterLowAbundanceGenes: pct.threshold = 1
+	scranNormalise: quickCluster = FALSE, min.mean = 1e-05
+	RunPCA: ngenes = 1500, scaling = TRUE
+	RunCORE: conservative = TRUE, n=20, nres=40
+- CellRanger
+	reanalyze --id=sample_tmp --matrix=filtered_gene_bc_matrices_h5.h5
+- cidr
+	determineDropoutCandidates: min1 = 3, min2 = 8,
+         N = 2000, alpha = 0.1, fast = TRUE, zerosOnly = FALSE,
+         bw_adjust = 1
+	 wThreshold: cutoff = 0.5, plotTornado = FALSE
+	scDissim: correction = FALSE, threads = 0,
+         useStepFunction = TRUE
+	scPCA:
+	nPC:
+	scCluster: n = NULL, nCluster = NULL,
+         nPC = NULL, cMethod = "ward.D2"
+- CountClust
+	FitGoM: cluster=8 ,tol = 0.1, path_rda = NULL, control = list()
+- RaceID
+	filterdata:  mintotal=1, minexpr = 5, minnumber = 5,
+                     LBatch = NULL, knn = 10, CGenes = NULL, FGenes = NULL, ccor = 0.4,
+                     bmode = "RaceID"
+	compost: metric="pearson", FSelect = TRUE, knn = NULL
+	clustexp: sat = TRUE, samp = NULL, cln = NULL, clustnr = 30,
+                   bootnr = 50, rseed = 17000, FUNcluster = "kmedoids"
+	findoutliers: probthr = 0.001, outminc = 5, outlg = 2,
+                       outdistquant = 0.95
+- RaceID2
+	filterdata: mintotal=1, minexpr=5, minnumber=1, maxexpr=500,
+	  downsample=FALSE, dsn=1, rseed=17000
+	clustexp: clustnr=30, bootnr=50, metric="pearson", do.gap=FALSE, 
+	  sat=TRUE, SE.method="Tibs2001SEmax", 
+          SE.factor=.25, B.gap=50, cln=0, rseed=17000, FUNcluster="kmedoids"
+	find outliers: outminc=5, outlg=2, probthr=1e-3, thr=2**-(1:40), outdistquant=.95
+- RCA
+	keep genes: ave.counts >= 1
+	delete genes: ribosomal protein and mitochondrial
+	normalize: exprs_values = "counts", return_log = TRUE,
+         log_exprs_offset = NULL, centre_size_factors = TRUE,
+         return_norm_as_exprs = TRUE
+	geneFilt: method = "default"
+	cellNormalize: method = "no_norm"
+	dataTransform: method = "log10"
+	featureConstruct: method = "GlobalPanel", power = 4
+	cellClust: method = "hclust", deepSplit_wgcna = 1,
+         min_group_Size_wgcna = 5
+- sc3
+	keep genes: ave.counts >= 1
+	delete genes: ribosomal protein and mitochondrial
+	normalize: exprs_values = "counts", return_log = TRUE,
+         log_exprs_offset = NULL, centre_size_factors = TRUE,
+         return_norm_as_exprs = TRUE
+	sc3: ks = k_est, gene_filter = TRUE,
+         pct_dropout_min = 10, pct_dropout_max = 90, d_region_min = 0.04,
+         d_region_max = 0.07, svm_num_cells = NULL, svm_train_inds = NULL,
+         svm_max = 5000, n_cores = 4, kmeans_nstart = NULL,
+         kmeans_iter_max = 1e+09, k_estimator = TRUSE biology = FALSE,
+         rand_seed = 1
+- scran
+	keep genes: ave.counts >= 1
+	delete genes: ribosomal protein and mitochondrial
+     quickCluster: min.size=200, max.size=NULL,  
+         get.ranks=FALSE, method=c("hclust", "igraph"), pc.approx=TRUE
+     computeSumFactors: sizes=seq(20, 100, 5), ref.clust=NULL,
+         positive=FALSE, errors=FALSE, min.mean=1, subset.row=NULL
+     normalize: exprs_values = "counts", return_log = TRUE,
+       log_exprs_offset = NULL, centre_size_factors = TRUE,
+       return_norm_as_exprs = TRUE
+     dist: method = "euclidean", diag = FALSE, upper = FALSE, p = 2
+     hclust: labels = NULL, hang = 0.1, check = TRUE,
+          axes = TRUE, frame.plot = FALSE, ann = TRUE,
+          main = "Cluster Dendrogram",
+          sub = NULL, xlab = NULL, ylab = "Height"
+     cutreeDynamic:  dendro, cutHeight = NULL, minClusterSize = 20,
+           method = "hybrid", distM = NULL,
+           deepSplit = (ifelse(method=="hybrid", 1, FALSE))
+- Seurat
+     CreateSeuratObject: min.cells = 3, min.genes = 0, is.expr = 0, 
+	  normalization.method = NULL, scale.factor = 10000, do.scale = FALSE, 
+	  do.center = FALSE, names.field = 1, names.delim = "_", meta.data = NULL,
+        display.progress = TRUE
+     NormalizeData: assay.type = "RNA",
+       normalization.method = "LogNormalize", scale.factor = 10000,
+       display.progress = TRUE
+     FindVariableGenes: mean.function = ExpMean, dispersion.function = LogVMR, 
+       x.low.cutoff = 0.0125, x.high.cutoff = 3, y.cutoff = 0.5, num.bin = 20,
+       binning.method = "equal_width", selection.method = "mean.var.plot",
+       top.genes = 1000, do.recalc = TRUE,
+       sort.results = TRUE, do.cpp = TRUE, display.progress = TRUE
+     ScaleData: vars.to.regress = c("nUMI", "percent.mito"), genes.use = NULL,
+	data.use = NULL,  model.use = "linear", use.umi = FALSE, do.scale = TRUE,
+        do.center = TRUE, scale.max = 10, block.size = 1000,
+        min.cells.to.block = 3000, display.progress = TRUE, assay.type = "RNA",
+        do.cpp = TRUE, check.for.norm = TRUE, do.par = FALSE, num.cores = 1
+     RunPCA: pc.genes = pbmc@var.genes, pcs.compute = 20, use.imputed = FALSE,
+       rev.pca = FALSE, weight.by.var = TRUE, do.print = TRUE,
+       pcs.print = 1:5, genes.print = 5, reduction.name = "pca",
+       reduction.key = "PC", assay.type = "RNA", seed.use = 42
+     JackStraw: num.replicate = 100, num.replicate = 100, prop.freq = 0.01,
+       display.progress = FALSE, do.par = FALSE, num.cores = 1, maxit = 1000
+     FindClusters: reduction.type = "pca", dims.use = 1:12, resolution = 0.6, 
+       print.output = 0, save.SNN = TRUE,  genes.use = NULL, 
+       k.param = 30, plot.SNN = FALSE, prune.SNN = 1/15,
+       print.output = TRUE, distance.matrix = NULL, save.SNN = FALSE,
+       reuse.SNN = FALSE, force.recalc = FALSE, nn.eps = 0,
+       modularity.fxn = 1, resolution = 0.6, algorithm = 1, n.start = 100,
+       n.iter = 10, random.seed = 0, temp.file.location = NULL,
+       edge.file.name = NULL
+-TSCAN
+     preprocess: clusternum = NULL, takelog = TRUE, logbase = 2,
+       pseudocount = 1, minexpr_value = 1, minexpr_percent = 0.01,
+       cvcutoff = 1
+     exprmclust: clusternum = 2:20, modelNames = "VVV", reduce = T
+
+R version 3.5.0 (2018-04-23)
+
+* Base packages: base, datasets, graphics, grDevices, methods, parallel, stats, stats4, utils
+* Other packages: acepack 1.4.1, ade4 1.7-13, AnnotationDbi 1.43.1, AnnotationHub 2.13.8, ape 5.2, ascend 0.9.0, assertthat 0.2.0, backports 1.1.2, base64enc 0.1-3, beeswarm 0.2.3, bibtex 0.4.2, bindr 0.1.1, bindrcpp 0.2.2, Biobase 2.41.2, BiocGenerics 0.27.1, BiocManager 1.30.3, BiocNeighbors 0.99.21, BiocParallel 1.15.15, bit 1.1-14, bit64 0.9-7, bitops 1.0-6, blob 1.1.1, caTools 1.17.1.1, cellrangerRkit 2.0.0, checkmate 1.8.5, cidr 0.1.5, class 7.3-14, cluster 2.0.7-1, clusterCrit 1.2.8, codetools 0.2-15, colorspace 1.3-2, combinat 0.0-8, compiler 3.5.0, corrplot 0.84, CountClust 1.9.1, cowplot 0.9.3, crayon 1.3.4, data.table 1.11.8, DBI 1.0.0, DelayedArray 0.7.47, DelayedMatrixStats 1.3.11, dendextend 1.8.0, DEoptimR 1.0-8, devtools 1.13.6, digest 0.6.18, diptest 0.75-7, doParallel 1.0.14, doRNG 1.7.1, doSNOW 1.0.16, dotCall64 1.0-0, dplyr 0.7.7, dtw 1.20-1, dynamicTreeCut 1.63-1, e1071 1.7-0, edgeR 3.23.5, fastICA 1.2-1, fields 9.6, fitdistrplus 1.0-11, flexmix 2.3-14, foreach 1.4.4, foreign 0.8-70, Formula 1.2-3, fpc 2.1-11.1, gbRd 0.4-11, gdata 2.18.0, GenomeInfoDb 1.17.3, GenomeInfoDbData 1.2.0, GenomicRanges 1.33.14, ggbeeswarm 0.6.0, ggplot2 3.0.0, ggridges 0.5.1, glue 1.3.0, gplots 3.0.1, grid 3.5.0, gridExtra 2.3, gtable 0.2.0, gtools 3.8.1, HDF5Array 1.9.19, hdf5r 1.0.0, Hmisc 4.1-1, htmlTable 1.12, htmltools 0.3.6, htmlwidgets 1.3, httpuv 1.4.5, httr 1.3.1, ica 1.0-2, igraph 1.2.2, interactiveDisplayBase 1.19.2, IRanges 2.15.18, irlba 2.3.2, iterators 1.0.10, jsonlite 1.5, kernlab 0.9-27, KernSmooth 2.23-15, knitr 1.20, lars 1.2, later 0.7.5, lattice 0.20-35, latticeExtra 0.6-28, lazyeval 0.2.1, limma 3.37.7, lmtest 0.9-36, locfit 1.5-9.1, lsei 1.2-0, magrittr 1.5, maps 3.3.0, maptpx 1.9-2, MASS 7.3-50, Matrix 1.2-14, matrixStats 0.54.0, mclust 5.4.1, memoise 1.1.0, metap 1.0, mgcv 1.8-24, mime 0.6, minpack.lm 1.2-1, mixtools 1.1.0, modeltools 0.2-22, munsell 0.5.0, mvtnorm 1.0-8, NbClust 3.0, nlme 3.1-137, NMI 2.0, nnet 7.3-12, npsurv 0.4-0, pbapply 1.3-4, pcaPP 1.9-73, permute 0.9-4, pheatmap 1.0.10, picante 1.7, pillar 1.3.0, pkgconfig 2.0.2, pkgmaker 0.27, plyr 1.8.4, png 0.1-7, prabclus 2.2-6, pracma 2.1.5, promises 1.0.1, proxy 0.4-22, purrr 0.2.5, R6 2.3.0, RaceId 0.1.1, RANN 2.6, RCA 1.0, RColorBrewer 1.1-2, Rcpp 0.12.19, RcppAnnoy 0.0.10, RcppEigen 0.3.3.4.0, RcppParallel 4.4.1, RCurl 1.95-4.11, Rdpack 0.10-1, registry 0.5, reshape2 1.4.3, reticulate 1.10, rhdf5 2.25.11, Rhdf5lib 1.3.3, rlang 0.2.2, R.methodsS3 1.7.1, Rmisc 1.5, rngtools 1.3.1, robustbase 0.93-3, ROCR 1.0-7, R.oo 1.22.0, rpart 4.1-13, rrcov 1.4-4, RSpectra 0.13-1, RSQLite 2.1.1, rstudioapi 0.8, Rtsne 0.13, R.utils 2.7.0, S4Vectors 0.19.22, SC3 1.9.1, scales 1.0.0, scater 1.9.21, scran 1.9.33, SDMTools 1.1-221, segmented 0.5-3.0, Seurat 2.3.4, shiny 1.1.0, SIMLR 1.7.2, SingleCellExperiment 1.3.11, slam 0.1-43, snow 0.4-3, spam 2.2-0, splines 3.5.0, SQUAREM 2017.10-1, statmod 1.4.30, stringi 1.2.4, stringr 1.3.1, SummarizedExperiment 1.11.6, survival 2.42-4, tibble 1.4.2, tidyr 0.8.1, tidyselect 0.2.5, tools 3.5.0, trimcluster 0.1-2.1, TSCAN 1.19.0, tsne 0.1-3, vegan 2.5-2, vipor 0.4.5, viridis 0.5.1, viridisLite 0.3.0, whisker 0.3-2, withr 2.1.2, WriteXLS 4.0.0, xtable 1.8-3, XVector 0.21.4, yaml 2.2.0, zlibbioc 1.27.0, zoo 1.8-4
+* CellRanger version 2.2.0

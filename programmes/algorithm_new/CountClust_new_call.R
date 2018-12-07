@@ -19,11 +19,10 @@ main <- function() {
     load(args[1])
     
     input <- as.matrix(counts(sce))
-    FitGoM(t(input), K = cluster_number, tol = 0.1, path_rda = "S10X.FitGoM.rda")
-
-    load("S10X.FitGoM.rda")
+    outs <- FitGoM(t(input), K = cluster_number, tol = 0.1, path_rda = NULL)
+  
     
-    eval(parse(text=paste0("colData(sce)$countClust <- unlist(apply(Topic_clus_list$clust_", cluster_number, "$omega, 1,  which.max))")))
+    colData(sce)$countClust <- unlist(apply(outs$fit$omega, 1,  which.max))
     res <- colData(sce)
     
     write.table(res, file=outname, quote=FALSE, row.names = FALSE, col.names=TRUE)

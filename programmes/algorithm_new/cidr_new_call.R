@@ -16,14 +16,18 @@ main <- function() {
     
     load(args[1])
     
-    scPBMCs <- scDataConstructor(as.matrix(assay(sce)))
-    scPBMCs <- determineDropoutCandidates(scPBMCs)
-    scPBMCs <- wThreshold(scPBMCs)
-    scPBMCs <- scDissim(scPBMCs)
-    scPBMCs <- scPCA(scPBMCs)
+    scPBMCs <- scDataConstructor(as.matrix(assay(sce)), tagType = "raw")
+    scPBMCs <- determineDropoutCandidates(scPBMCs, min1 = 3, min2 = 8,
+    N = 2000, alpha = 0.1, fast = TRUE, zerosOnly = FALSE,
+    bw_adjust = 1)
+    scPBMCs <- wThreshold(scPBMCs, cutoff = 0.5, plotTornado = FALSE)
+    scPBMCs <- scDissim(scPBMCs, correction = FALSE, threads = 0,
+    useStepFunction = TRUE)
+    scPBMCs <- scPCA(scPBMCs, plotPC = FALSE)
     scPBMCs <- nPC(scPBMCs)
     set.seed(89549585)
-    scPBMCs <- scCluster(scPBMCs)
+    scPBMCs <- scCluster(scPBMCs, n = NULL, nCluster = NULL,
+    nPC = NULL, cMethod = "ward.D2")
     
     colData(sce)$CIDR <- scPBMCs@clusters
     res <- colData(sce)

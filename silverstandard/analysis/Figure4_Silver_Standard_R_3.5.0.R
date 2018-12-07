@@ -1,7 +1,7 @@
 ###########################################################################################
 #                                                                                         #
 #                                                                                         #
-#                           Make Figure Silver Standard 2b                                #
+#                           Make Figure Silver Standard 4b                                #
 #                                                                                         #
 #                                                                                         #
 ###########################################################################################
@@ -10,9 +10,36 @@ library(corrplot)
 library(mclust)
 library(NMI)
 
+
 ## Load results
-load("Clustering_Result_Dataset2.RData")
-res_cellranger <- res
+load("Clustering_Result_Dataset2b.RData")
+res_dataset2a <- res
+colnames(res_dataset2a)[77] <- "Cell Ranger"
+colnames(res_dataset2a)[81] <- "RaceID"
+
+load("Clustering_Result_Dataset3b.RData")
+res_dataset3a <- res
+colnames(res_dataset3a)[77] <- "Cell Ranger"
+colnames(res_dataset3a)[81] <- "RaceID"
+
+load("Clustering_Result_Dataset4.RData")
+res_dataset4 <- res
+colnames(res_dataset4)[77] <- "Cell Ranger"
+colnames(res_dataset4)[81] <- "RaceID"
+
+load("Clustering_Result_Dataset5.RData")
+res_dataset5 <- res
+colnames(res_dataset5)[77] <- "Cell Ranger"
+colnames(res_dataset5)[81] <- "RaceID"
+
+
+res_all <- list(`dataset 2a`=res_dataset2a,  `dataset 3a`=res_dataset3a , `dataset 4`= res_dataset4, `dataset 5`= res_dataset5)
+
+# Find index of clustering results
+programs <- c( "ascend", "Cell Ranger", "CIDR", "countClust", "RaceID", "RaceID2", "RCA", "SC3", "scran",  "Seurat"
+               ,"TSCAN")         
+index_all <- lapply(res_all, function(x) pmatch(programs, colnames(x)))
+
 
 # Function to compare clustering results
 comp_cluster_mat<-function(res_clusters1){
@@ -60,16 +87,16 @@ plot_corr_sim <- function(mat1, clust_num){
 
 
 ## Calculate similarity, order them according to ARI and NMI and plot 
-programs <- c( "ascend", "Cell Ranger", "CIDR", "countClust", "RaceID", "RaceID2", "RCA", "SC3", "SIMLR", "scran", "Seurat","TSCAN")         
 
-index_cellranger <- pmatch(programs, colnames(res_cellranger))
-mat1_cellranger <- comp_cluster_mat(res_cellranger[,index_cellranger])
+mat_all <- lapply(1:length(res_all), function(x) comp_cluster_mat(res_all[[x]][,index_all[[x]]]))
+mat_all1 <- Reduce("+", mat_all)/4 
 
-# Calculate number of clusters in each method
-clust_num_cellranger <- apply(res_cellranger[,index_cellranger], 2, function(x) length(unique(x)))
+clust_num_1<- lapply(1:length(res_all), function(x1) apply(res_all[[x1]][,index_all[[x1]]], 2, function(x) length(unique(x))))
 
-pdf("Plot_SilverStandard_2b.pdf", width=10.45, height=10.45)
-plot_corr_sim(mat1_cellranger, clust_num_cellranger)
+clust_num_1 <- Reduce("+", clust_num_1)/4
+
+pdf("Plot_SilverStandard_Compare_3.5.0.pdf", width=10.45, height=10.45)
+plot_corr_sim(mat_all1, clust_num_1)
 text("b", x=-1, y=12.5, cex=2.5)
 dev.off()
 

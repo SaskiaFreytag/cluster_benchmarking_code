@@ -18,7 +18,7 @@ main <- function() {
     
     pbmc <-  CreateSeuratObject(raw.data = as.matrix(counts(sce)), min.cells = 3
     , min.genes = 0,  project = "10X_PBMC")
-    mito.genes <- grep(pattern = "^MT-", x = rownames(x = pbmc@data), value = TRUE)
+    mito.genes <- grep(pattern = "^MT", x = rownames(x = pbmc@data), value = TRUE)
     percent.mito <- Matrix::colSums(pbmc@raw.data[mito.genes, ])/Matrix::colSums(pbmc@raw.data)
     pbmc <- AddMetaData(pbmc, percent.mito, "percent.mito")
     pbmc <- NormalizeData(object = pbmc, normalization.method = "LogNormalize", scale.factor = 10000)

@@ -19,7 +19,7 @@ res_dataset1$Truth <- assigned_cell_types$Assigned_CellType
 
 load("Clustering_Result_Dataset2.RData")
 res_dataset2 <- res
-load("Assigned_Cell_Types_Dataset3.RData")
+load("Assigned_Cell_Types_Dataset2.RData")
 res_dataset2$Truth <- assigned_cell_types$Assigned_CellType
 
 load("Clustering_Result_Dataset3.RData")
@@ -35,9 +35,8 @@ index_dataset3 <- pmatch(programs, colnames(res_dataset3))
 
 
 ## Function to find adjusted R-square for cell trait
-find_adRsq <- function(res, clusters, attributes=c("total_counts", "total_features", "pct_counts_mt", "pct_counts_rbr", "pct_counts_rbp"),
-                       better_lables=c("Total counts", "Total features", "Mitochondrial (%)", 
-                                       "Ribosomal RNA (%)", "Ribosomal Protein (%)")){
+find_adRsq <- function(res, clusters, attributes=c("total_counts", "total_features", "pct_counts_mt", "pct_counts_rbr", "pct_counts_rbp"),better_lables=c("Total number of counts",
+    "Total number of genes detected", "Mitochondrial (%)", "Ribosomal RNA (%)", "Ribosomal Protein (%)")){
   indices <- pmatch(attributes, colnames(res))
   
   res_mat <- matrix(NA, ncol=length(indices), nrow=length(clusters))
