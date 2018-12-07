@@ -1,7 +1,7 @@
 ###########################################################################################
 #                                                                                         #
 #                                                                                         #  
-#                                PRE-PROCESSING DATASET1a                                 #
+#                                PRE-PROCESSING DATASET2b                                 #
 #                                                                                         #
 #                                                                                         #
 ###########################################################################################
@@ -46,7 +46,7 @@ sce@rowRanges <- as(sce@rowRanges, "GRangesList")
 barcode<-colData(sce)$Barcode
 barcode<-as.matrix(barcode)
 colnames(barcode)<-"Barcode"
-write.csv(barcode, file="cleaned_barcodes_dataset1a.csv", row.names = F, quote=F)
+write.csv(barcode, file="cleaned_barcodes_dataset2b.csv", row.names = F, quote=F)
 
 ## Save scater object for further analysis
-save(sce, file="Sce_Dataset1a.RData")
+save(sce, file="Sce_Dataset2b.RData")

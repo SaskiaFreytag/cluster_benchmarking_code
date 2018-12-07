@@ -1,7 +1,7 @@
 ###########################################################################################
 #                                                                                         #
 #                                                                                         #
-#                     ASSIGNING CLUSTER NAMES VIA 10X METHOD DATASET5                     #
+#                     ASSIGNING CLUSTER NAMES VIA 10X METHOD DATASET1                     #
 #                                                                                         #
 #                                                                                         #
 ###########################################################################################
@@ -20,7 +20,7 @@ library(devtools)
 source_url("https://raw.githubusercontent.com/10XGenomics/single-cell-3prime-paper/master/pbmc68k_analysis/util.R")
 
 ## Load dataset and reference datasets
-load("Sce_Dataset5.RData")
+load("Sce_Dataset3b.RData")
 
 # Download data from https://github.com/10XGenomics/single-cell-3prime-paper/tree/master/pbmc68k_analysis
 pure_11 <-  readRDS("../Reference/all_pure_select_11types.rds")
@@ -53,7 +53,7 @@ cls_id<-factor(colnames(z_1000_11)[test])
 colData(sce)$Assigned_CellType<-cls_id
 
 assigned_cell_types<-colData(sce)
-save(assigned_cell_types, file="Assigned_Cell_Types_Dataset5.RData")
+save(assigned_cell_types, file="Assigned_Cell_Types_Dataset4.RData")
 
 csl_id1<-cbind(colnames(z_1000_11)[test], z_1000_11[cbind(1:length(test), test)])
-save(csl_id1, file="Assigned_Cell_Types_Info_Dataset5.RData")
+save(csl_id1, file="Assigned_Cell_Types_Info_Dataset4.RData")

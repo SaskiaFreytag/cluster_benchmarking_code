@@ -1,7 +1,7 @@
 ###########################################################################################
 #                                                                                         #
 #                                                                                         #
-#                     ASSIGNING CLUSTER NAMES VIA 10X METHOD DATASET1                     #
+#                     ASSIGNING CLUSTER NAMES VIA 10X METHOD DATASET5                     #
 #                                                                                         #
 #                                                                                         #
 ###########################################################################################
@@ -26,8 +26,6 @@ load("Sce_Dataset4.RData")
 pure_11 <-  readRDS("../Reference/all_pure_select_11types.rds")
 pbmc_68k <- readRDS('../Reference/all_pure_pbmc_data.rds')
 
-pure_11 <-  readRDS("/Users/freytag.s/Desktop/10X/all_pure_select_11types.rds")
-pbmc_68k <- readRDS('/Users/freytag.s/Desktop/10X/all_pure_pbmc_data.rds')
 
 purified_ref_11 <- load_purified_pbmc_types(pure_11,pbmc_68k$all_data$`15852`$hg19$genes)
 m<-as.matrix(t(counts(sce)))
@@ -55,7 +53,7 @@ cls_id<-factor(colnames(z_1000_11)[test])
 colData(sce)$Assigned_CellType<-cls_id
 
 assigned_cell_types<-colData(sce)
-save(assigned_cell_types, file="Assigned_Cell_Types_Dataset4.RData")
+save(assigned_cell_types, file="Assigned_Cell_Types_Dataset5.RData")
 
 csl_id1<-cbind(colnames(z_1000_11)[test], z_1000_11[cbind(1:length(test), test)])
-save(csl_id1, file="Assigned_Cell_Types_Info_Dataset4.RData")
+save(csl_id1, file="Assigned_Cell_Types_Info_Dataset5.RData")
