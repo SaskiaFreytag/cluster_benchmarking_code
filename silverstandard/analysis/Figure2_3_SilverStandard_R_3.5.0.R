@@ -29,7 +29,7 @@ res_dataset2a <- res
 colnames(res_dataset2a)[77] <- "Cell Ranger"
 colnames(res_dataset2a)[81] <- "RaceID"
 
-load("Assigned_Cell_Types_Dataset1a.RData")
+load("Assigned_Cell_Types_Dataset2b.RData")
 res_dataset2a$Assigned_CellTypes <- assigned_cell_types$Assigned_CellType
 
 #
